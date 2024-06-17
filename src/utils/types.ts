@@ -38,3 +38,13 @@ export type TUser = {
 };
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
+
+export type TServerResponse<T> = {
+  success: boolean;
+} & T;
+
+export type TFeedsResponse = TServerResponse<{
+  orders: TOrder[];
+  total: number;
+  totalToday: number;
+}>;
