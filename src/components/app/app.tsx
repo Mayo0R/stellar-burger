@@ -51,6 +51,11 @@ const App = () => {
     );
   }
 
+
+  const closeModal = () => {
+    navigate(-1);
+  };
+
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -93,9 +98,7 @@ const App = () => {
               element={
                 <Modal
                   title='Детали заказа'
-                  onClose={() => {
-                    navigate(-1);
-                  }}
+                  onClose={closeModal}
                 >
                   <OrderInfo />
                 </Modal>
@@ -106,9 +109,7 @@ const App = () => {
               element={
                 <Modal
                   title='Детали ингредиента'
-                  onClose={() => {
-                    navigate(-1);
-                  }}
+                  onClose={closeModal}
                 >
                   <IngredientDetails />
                 </Modal>
@@ -119,9 +120,7 @@ const App = () => {
               element={
                 <Modal
                   title='Детали заказа'
-                  onClose={() => {
-                    navigate(-1);
-                  }}
+                  onClose={closeModal}
                 >
                   <OrderInfo />
                 </Modal>
