@@ -7,8 +7,7 @@ import {
   Route,
   useNavigate,
   useLocation,
-  Location,
-  Navigate
+  Location
 } from 'react-router-dom';
 import {
   ConstructorPage,
@@ -28,26 +27,7 @@ import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { fetchOrders } from '../../services/slices/ordersSlice';
 import { checkAuth } from '../../services/slices/userAuthSlice';
 import { Preloader } from '../ui/preloader';
-
-type ProtectedRouteProps = {
-  children: React.ReactElement;
-};
-
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const authIsChecking = useSelector((state) => state.auth.authIsChecking);
-  const authed = useSelector((state) => state.auth.authorized);
-  const location = useLocation();
-
-  if (authIsChecking) {
-    return <Preloader />;
-  }
-
-  if (!authed) {
-    return <Navigate replace to='/login' state={{ from: location }} />;
-  }
-
-  return children;
-};
+import { ProtectedRoute } from '../protectedRoute/protectedRoute'; // Импорт вашего ProtectedRoute
 
 const App = () => {
   const dispatch = useDispatch();
@@ -102,14 +82,7 @@ const App = () => {
         </Route>
         <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
-        <Route
-          path='/profile/orders/:number'
-          element={
-            <ProtectedRoute>
-              <OrderInfo />
-            </ProtectedRoute>
-          }
-        />
+        <Route path='/profile/orders/:number' element={<OrderInfo />} />
       </Routes>
 
       {state?.backgroundLocation && (
@@ -144,16 +117,14 @@ const App = () => {
             <Route
               path='/profile/orders/:number'
               element={
-                <ProtectedRoute>
-                  <Modal
-                    title='Детали заказа'
-                    onClose={() => {
-                      navigate(-1);
-                    }}
-                  >
-                    <OrderInfo />
-                  </Modal>
-                </ProtectedRoute>
+                <Modal
+                  title='Детали заказа'
+                  onClose={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <OrderInfo />
+                </Modal>
               }
             />
           </Routes>

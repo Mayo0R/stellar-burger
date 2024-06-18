@@ -2,6 +2,12 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TAuthResponse, getUserApi, getOrdersApi } from '@api';
 import { TUser, TOrder } from '@utils-types';
 import { setCookie, getCookie, deleteCookie } from '../../utils/cookie';
+import {
+  loginUser,
+  updateUser,
+  registerUser,
+  resetPassword
+} from '../actions/authActions';
 
 interface AuthState {
   user: TUser;
@@ -104,6 +110,32 @@ const userAuthSlice = createSlice({
     );
     builder.addCase(fetchUserOrders.rejected, (state) => {
       state.ordersIsLoading = false;
+    });
+    builder.addCase(loginUser.pending, (state) => {
+      state.authIsChecking = true;
+    });
+    builder.addCase(loginUser.fulfilled, (state, action) => {
+      state.authIsChecking = false;
+      if (action.payload.success) {
+        state.user = action.payload.user;
+        state.authorized = true;
+      }
+    });
+    builder.addCase(loginUser.rejected, (state) => {
+      state.authIsChecking = false;
+      state.user = { name: '', email: '' };
+      state.authorized = false;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      if (action.payload.success) {
+        state.user = action.payload.user;
+      }
+    });
+    builder.addCase(registerUser.fulfilled, (state, action) => {
+      // handle registration success if needed
+    });
+    builder.addCase(resetPassword.fulfilled, (state, action) => {
+      // handle password reset success if needed
     });
   }
 });

@@ -5,7 +5,6 @@ import { clearConstructor } from '../../services/slices/constructorSlice';
 import { TNewOrderResponse, getOrdersApi, orderBurgerApi } from '@api';
 import { TOrder } from '@utils-types';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { current } from '@reduxjs/toolkit';
 import { setDesiredUrl } from '../../services/slices/userAuthSlice';
 import { useDispatch, useSelector } from '../../services/store';
 

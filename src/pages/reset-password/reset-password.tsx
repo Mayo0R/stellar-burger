@@ -1,12 +1,13 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { resetPasswordApi } from '@api';
+import { useDispatch, useSelector } from '../../services/store';
 import { ResetPasswordUI } from '@ui-pages';
-import { useSelector } from '../../services/store';
+import { resetPassword } from '../../services/actions/authActions';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 export const ResetPassword: FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
   const [error, setError] = useState<Error | null>(null);
@@ -16,17 +17,23 @@ export const ResetPassword: FC = () => {
     if (authed) {
       navigate('/');
     }
-  }, []);
+  }, [authed, navigate]);
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setError(null);
-    resetPasswordApi({ password, token })
-      .then(() => {
+    try {
+      const resultAction = await dispatch(resetPassword({ password, token }));
+      const data = unwrapResult(resultAction);
+      if (data.success) {
         localStorage.removeItem('resetPassword');
         navigate('/login');
-      })
-      .catch((err) => setError(err));
+      } else {
+        setError(new Error('Password reset failed'));
+      }
+    } catch (error) {
+      setError(new Error('Password reset failed'));
+    }
   };
 
   useEffect(() => {
